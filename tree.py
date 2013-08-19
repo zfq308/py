@@ -1,18 +1,27 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Sat Nov 10 21:18:34 2012
-
-@author: spruce
-"""
-
+import sys
 import os
 
-def tree(root):
-    if os.path.isfile(root):
-        print root
+def printsubfolder(path, name, level):
+    o = ''
+    if(os.path.isfile(path + name)):
+        for index in range(level - 1):
+            o = o + '    '
+        o = o + '|---'
+        print(o + name + '\n')
     else:
-        for temp in os.listdir(root):
-            tree(root + os.sep + temp)
+        for index in range(level - 1):
+            o = o + '    '
+        o = o + '|---'
+        
+        if(level == 0):
+            print(path + '\n')
+        else:
+            print(o + name + '\n')
+            
+        for file in os.listdir(path + name):
+            printsubfolder(path + name + '\\', file, level + 1)
+    
+def tree(path):
+    printsubfolder(path, '', 0)
 
-if __name__ == '__main__':
-    tree('/home/spruce')
+tree('E:/release_new')
