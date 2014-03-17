@@ -2,105 +2,122 @@
 import urllib
 import re
 import os
+import datetime
+import time
 
-img_url_file = 'd:/repo/py/EDC/img_file.txt'
-IMG_PATH = 'd:/edc/'
+IMG_PATH = 'e:/edc/'
+DOWNLOAD_PROGRESS_TIMELINE_FILE = IMG_PATH + 'progress_timeline.txt'
+DOWNLOAD_PROGRESS_IMAGE_URL_FILE = IMG_PATH + 'progress_image_url.txt'
 
-def get_has_download_list():
-    f = open(img_url_file, 'r')
-    l = []
-    for line in f:
-        if line in l:
-            pass
-        else:
-            l.append(line)
-    f.close()
-    return l
-
-def get_html(link):
+# read a page
+def GetHtml(link):
     filehandle = urllib.urlopen(link)
     html = ''
     for line in filehandle:
         html += line
     return html
 
-def download(img_url, img_name, id):
-    img = open(IMG_PATH + id + '_' + img_name, 'wb')
-    content = urllib.urlopen(img_url)
-    print IMG_PATH + id + '_' + img_name
-    for line in content:
-        img.write(line)
-    img.close()
-    content = None
-    
-def get_img_name(url):
-    reg = r'http://(.*?)/(.*)'
-    m = re.search(reg, url)
-    return m.group(2)
-
-def get_id(url):
-    reg = r'http://everyday-carry.com/post/(\d*)/.*?'
-    m = re.search(reg, url)
-    return m.group(1)
-
-def get_img(html):
-    reg = r'<img\sid="image"\sclass="fit_to_screen"\ssrc="(.*?)"/>'
-    m = re.search(reg, html)
-    return m.group(1)
-
-def get_detail_url(html):
-    url_reg = r'<a\sid="post.*?class="brick.*?href="(.+?)"\s>'
-    p = re.compile(url_reg)
-    return p.findall(html)
-    
-def get_timeline(html):
+# get timeline from page
+def GetTimeline(html):
     reg_list = r'<a\sid="next_page_link"\shref="/archive\?before_time=(\d*)">'
     m = re.search(reg_list, html)
     return m.group(1)
 
-def write_to_file(path, mode, content):
-    try:
-        img_file = open(img_url_file, 'w+')
-        img_file.writelines(img + os.linesep)
-    finally:
-        img_file.close()
+def GetDetailPageUrl(html):
+    url_reg = r'<a\starget="_blank"\sclass="hover"(?:\s|.)*?href="(.+?)">'
+    p = re.compile(url_reg)
+    return p.findall(html)
 
-def clear_file(path):
-    try:
-        img_file = open(img_url_file, 'a')
-        img_file.writelines(img + os.linesep)
-    finally:
-        img_file.close()
+# Get image's url which we want 
+def GetImageUrl(html):
+    imageUrlRe = r'<img\ssrc="(.*?)"\sdata-highres="(.*?)"'
+    m = re.search(imageUrlRe, html)
+    url = m.group(2)
+    if url == None:
+        url = m.group(1)
+    return url
 
-def clear_file():
+# Get image file name
+def GetImageName(url):
+    imageNameRe = r'(.*?/)*(.*)'
+    m = re.search(imageNameRe, url)
+    return m.group(2)
+
+def Download(img_url, img_name):
+    img = open(IMG_PATH + img_name, 'wb')
+    content = urllib.urlopen(img_url)
+    for line in content:
+        img.write(line)
+    img.close()
+    content = None
+
+def SaveProgress(site, filename):
     try:
-        img_file = open(img_url_file, 'w')
-        img_file.writelines('')
+        img_file = open(filename, 'a')
+        img_file.writelines(site + os.linesep)
     finally:
         img_file.close()
 
 if __name__ == '__main__':
-    has_download_list = get_has_download_list()
+    print 'Start At ' + str(datetime.datetime.now())
+
+    print '[Timeline Finshed]'
+    f1 = open(DOWNLOAD_PROGRESS_TIMELINE_FILE, 'r')
+    timelineList = []
+    for line in f1:
+        if line in timelineList:
+            pass
+        else:
+            timelineList.append(line.strip(os.linesep))
+            print line
+    f1.close()
+    
+    print '[Image Url Finshed]'
+    f2 = open(DOWNLOAD_PROGRESS_IMAGE_URL_FILE, 'r')
+    imageUrlList = []
+    for line in f2:
+        if line in imageUrlList:
+            pass
+        else:
+            imageUrlList.append(line.strip(os.linesep))
+            print line
+    f2.close()
+
+
+    counter = 0;
+
     site = 'http://everyday-carry.com/archive'
+    print '[Site]' + os.linesep + site
+
     try:
         while True:
-            print '[-->]' + site
-            html = get_html(site)
-            if site in has_download_list:
-                detail_url_list = get_detail_url(html)
-                for cur in detail_url_list:
+            print '[Timeline]' + site
+
+            html = GetHtml(site)
+            if site not in timelineList:
+                detailPageUrls = GetDetailPageUrl(html)
+                for detailPageUrl in detailPageUrls:
+                    print '---->' + detailPageUrl
                     try:
-                        img_id = get_id(cur)
-                        img_url = get_img(get_html('http://everyday-carry.com/image/' + img_id))
-                        print get_img_name(img_url)
-                        download(img_url, get_img_name(img_url), img_id)
+                        imageUrl = GetImageUrl(GetHtml(detailPageUrl))
+                        if imageUrl in imageUrlList:
+                            continue
+                        imageName = GetImageName(imageUrl)
+                        Download(imageUrl, str(time.time()) + '_' + imageName)
+                        SaveProgress(imageUrl, DOWNLOAD_PROGRESS_IMAGE_URL_FILE)
+                        counter += 1
+                        print 'Download Counter ' + str(counter)
                     except Exception, e:
                         print e
             else:
                 print 'pass'
-            site = 'http://everyday-carry.com/archive?before_time=' + str(get_timeline(html))
-            write_to_file(site)
+
+            timeline = GetTimeline(html)
+            site = 'http://everyday-carry.com/archive?before_time=' + timeline
+            SaveProgress(site, DOWNLOAD_PROGRESS_TIMELINE_FILE)
+
     except Exception, e:
         print e
         print '[error]' + site
 
+    print 'End At ' + str(datetime.datetime.now())
