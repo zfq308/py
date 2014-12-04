@@ -2,20 +2,13 @@ import os
 import sys
 import shutil
 
-del_list = ['utdid.jar']
+del_list = [
+    ]
 update_list = [
-    'MobileSecSdk.jar',
     'Plugin.jar',
-    'alipaysdk.jar',
-    'assets/channel.properties',
     'core.jar',
-    'res/drawable-hdpi/mgp_payment_way_alipay.png',
-    'res/drawable-hdpi/mgp_payment_way_alipay_new.png',
-    'res/layout/mgp_payment_root.xml',
     'res/values/mgp_arrays.xml',
-    'res/values/mgp_strings.xml',
-    'res/values/mgp_styles.xml',
-    'utdid4all-1.0.4.jar'
+    'res/values/mgp_strings.xml'
     ]
 
 src = 'Android_cyou'
@@ -41,26 +34,38 @@ target_list = [
     'CPS_AGuo',
     'CPS_AoYouTianXia',
     'CPS_BaiYu',
+    'CPS_BanMa',
+    'CPS_CyouTY',
     'CPS_DiYiYingYong',
+    'CPS_HeiYou',
+    'CPS_HongYanXinXi',
+    'CPS_htc2',
     'CPS_JunHai',
     'CPS_LiangZiTuiGuang',
     'CPS_LiTian',
+    'CPS_LiuJianFang',
     'CPS_MoLiDuo',
     'CPS_MuMaYi',
+    'CPS_Netease',
     'CPS_PiPa2',
     'CPS_PuTao',
     'CPS_QingNing',
     'CPS_QiXiaZi',
+    'CPS_QuWang',
     'CPS_SOHU',
+    'CPS_Tencent',
     'CPS_TianYiLian',
+    'CPS_YaMaXun',
+    'CPS_YangShiChuanMei',
     'CPS_YiGuo',
+    'CPS_YouXiDuo',
     'CPS_YouXiTanZi',
     'CPS_YouYi',
     'CPS_YouYou',
     'CPS_ZhuoYi'
     ]
 
-root = 'D:/repo/MLDJClient/Version/Main/Project/Client/AndroidPlugins/'
+root = 'F:/mtlbb/Version/TY/Project/Client/AndroidPlugins'
 
 def delete(channel):
     for d in del_list:
@@ -83,5 +88,6 @@ if __name__ == '__main__':
         channel = root + os.sep + target
         delete(channel)
         update(channel)
-        os.chdir(channel)
-        os.system('patch -p0 < ..\AndroidManifest.xml.patch')
+        os.chdir(root)
+##        os.system('patch -p0 < ../../manifest.patch')
+##        os.system('patch ' + channel + '/AndroidManifest.xml patch')
