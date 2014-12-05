@@ -35,7 +35,6 @@ target_list = [
     'CPS_AoYouTianXia',
     'CPS_BaiYu',
     'CPS_BanMa',
-    'CPS_CyouTY',
     'CPS_DiYiYingYong',
     'CPS_HeiYou',
     'CPS_HongYanXinXi',
