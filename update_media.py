@@ -5,10 +5,7 @@ import shutil
 del_list = [
     ]
 update_list = [
-    'Plugin.jar',
-    'core.jar',
-    'res/values/mgp_arrays.xml',
-    'res/values/mgp_strings.xml'
+    'Plugin.jar'
     ]
 
 src = 'Android_cyou'
@@ -61,10 +58,26 @@ target_list = [
     'CPS_YouXiTanZi',
     'CPS_YouYi',
     'CPS_YouYou',
-    'CPS_ZhuoYi'
+    'CPS_ZhuoYi',
+    'CPS_DuoMeng_CPA',
+    'CPS_DuoMeng_CPC',
+    'CPS_AiDeSiQi_CPA',
+    'CPS_AiDeSiQi_CPC',
+    'CPS_LiMei_CPA',
+    'CPS_LiMei_CPC',
+    'CPS_DianRu_CPA',
+    'CPS_Inmobi',
+    'CPS_Adwords',
+    'CPS_ShouJiSOHU',
+    'CPS_SOHU1',
+    'CPS_AiDeSiQiWangYuYan_CPC',
+    'CPS_DuoMengWangYuYan_CPC',
+    'CPS_LiMeiWangYuYan_CPC',
+    'CPS_YouLeYuan',
+    'CPS_SanXing'
     ]
 
-root = 'F:/mtlbb/Version/TY/Project/Client/AndroidPlugins'
+root = 'f:/repo/mtlbb/MLDJ/BuildTool/Android/AndroidPlugins'
 
 def delete(channel):
     for d in del_list:
@@ -81,12 +94,21 @@ def update(channel):
         shutil.copy(src + os.sep + d, p)
         print '[U]' + p
 
+def update_config():
+    config = open('config.properties', 'a')
+    config.write('\n')
+    config.write('GONGGAO_CHANNEL=http://baidu.com')
+    config.write('\n')
+    config.write('GONGGAO_COMMON=http://google.com')
+    config.close()
+    
 if __name__ == '__main__':
     src = root + os.sep + src
     for target in target_list:
         channel = root + os.sep + target
         delete(channel)
         update(channel)
-        os.chdir(root)
-##        os.system('patch -p0 < ../../manifest.patch')
+        os.chdir(channel + '/' + 'assets')
+        update_config()
+##        os.system('patch -p0 < ../../../patch')
 ##        os.system('patch ' + channel + '/AndroidManifest.xml patch')
