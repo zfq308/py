@@ -16,7 +16,7 @@ target_list = [
     'Android_anfeng',
     'Android_baidumedia',
     'Android_cyouplus',
-    'Android_duowan',
+    'CPS_DuoWan',
     'Android_htc',
     'Android_maoren',
     'Android_muzhiwan',
@@ -74,7 +74,10 @@ target_list = [
     'CPS_DuoMengWangYuYan_CPC',
     'CPS_LiMeiWangYuYan_CPC',
     'CPS_YouLeYuan',
-    'CPS_SanXing'
+    'CPS_SanXing',
+    'CPS_FanRen',
+    'CPS_HangZhouSaiZhong',
+    'CPS_KuWan'
     ]
 
 root = 'f:/repo/mtlbb/MLDJ/BuildTool/Android/AndroidPlugins'
