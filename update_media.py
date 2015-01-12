@@ -109,9 +109,10 @@ if __name__ == '__main__':
     src = root + os.sep + src
     for target in target_list:
         channel = root + os.sep + target
-        delete(channel)
-        update(channel)
-        os.chdir(channel + '/' + 'assets')
-        update_config()
+        if(os.path.exists(channel)):
+            delete(channel)
+            update(channel)
+##        os.chdir(channel + '/' + 'assets')
+##        update_config()
 ##        os.system('patch -p0 < ../../../patch')
 ##        os.system('patch ' + channel + '/AndroidManifest.xml patch')
