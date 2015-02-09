@@ -5,17 +5,18 @@ import shutil
 import time
 import random
 
-# rootPath = 'E:/Newfolder2'
-# logFile = 'E:/log.txt'
-# errorFile = 'E:/error.txt'
-# resultPath = 'E:/result_new'
-# allFile = 'E:/all_file.txt'
+rootPath = 'E:/Newfolder2'
+logFile = 'E:/log.txt'
+errorFile = 'E:/error.txt'
+resultPath = 'E:/result_new'
+allFile = 'D:/all_file_online.txt'
+allFileSorted = 'E:/all_file_after_sort.txt'
 
-rootPath = '/Users/spruce/Downloads/src'
-logFile = '/Users/spruce/Downloads/log.txt'
-errorFile = '/Users/spruce/Downloads/error.txt'
-resultPath = '/Users/spruce/Downloads/result_new'
-allFile = '/Users/spruce/Downloads/all_file_online.txt'
+##rootPath = '/Users/spruce/Downloads/src'
+##logFile = '/Users/spruce/Downloads/log.txt'
+##errorFile = '/Users/spruce/Downloads/error.txt'
+##resultPath = '/Users/spruce/Downloads/result_new'
+##allFile = '/Users/spruce/Downloads/all_file_online.txt'
 
 files = []
 filesName = []
@@ -60,8 +61,7 @@ def insertion_sort():
     log('Sort done...')
 
 def saveFileName():
-    f = '/Users/spruce/Downloads/all_file_after_sort.txt'
-    log = open(f, 'a')
+    log = open(allFileSorted, 'a')
     for file in files:
         log.write(file + '\r')
     log.close()
@@ -129,7 +129,17 @@ def load():
         for path in l.split('\r'):
             if path == '' or path == '\r':
                 continue
-            print path
+            files.append(path)
+            filesName.append(int(os.path.basename(path).split('.')[0].split('_')[1]))
+    f.close()
+    
+def load1():
+    print 'load ' + allFileSorted
+    f = open(allFileSorted, 'r')
+    for l in f:
+        for path in l.split('\r'):
+            if path == '' or path == '\r':
+                continue
             files.append(path)
             filesName.append(int(os.path.basename(path).split('.')[0].split('_')[1]))
     f.close()
@@ -138,12 +148,12 @@ def main():
     log('Start...')
     # get all file, save to files
     # tree(rootPath)
-    load()
+    load1()
     log('Total file number : ' + str(len(files)))
     # sort files
-    insertion_sort()
-    for file in files:
-        log(file)
+##    insertion_sort()
+##    for file in files:
+##        log(file)
     if os.path.exists(resultPath):
         shutil.rmtree(resultPath)
     os.mkdir(resultPath)
@@ -151,10 +161,10 @@ def main():
         do(file)
 
 if __name__ == '__main__':
-    #main()
-    load()
-    insertion_sort()
-    saveFileName()
+    main()
+##    load()
+##    insertion_sort()
+##    saveFileName()
     
 
 
