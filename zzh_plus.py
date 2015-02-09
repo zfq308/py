@@ -4,11 +4,13 @@ import time
 import shutil
 import time
 
-rootPath = 'D:/test'
-logFile = 'D:/log.txt'
-resultPath = 'D:/result'
+rootPath = 'E:/Newfolder2'
+logFile = 'E:/log.txt'
+errorFile = 'E:/error.txt'
+resultPath = 'E:/result'
 
 files = []
+counter = 0
 
 def tree(path):
     if os.path.isfile(path):
@@ -33,6 +35,12 @@ def log(msg):
     log.write(time.ctime() + '\t' + msg + '\r')
     log.close()
 
+def error(msg):
+    print msg
+    log = open(errorFile, 'a')
+    log.write(time.ctime() + '\t' + msg + '\r')
+    log.close()
+
 def cleanBlank(arr):
     newArr = []
     for i in arr:
@@ -49,6 +57,8 @@ def save(stockNo, content):
     stockFile.close()
 
 def do(file):
+    #stockNo:lines
+    temp = {}
     before = time.time()
     f = open(file, 'r')
     for line in f:
@@ -61,9 +71,18 @@ def do(file):
                 log('error\t' + file + '\t' + line)
             else:
                 stockNo = str(arr[1])
-                save(stockNo, line)
+                content = temp.get(stockNo)
+                if content is None:
+                    content = ''
+                content += line
+                temp[stockNo] = content
+    for key in temp:
+        save(key, temp[key])
+    global counter
+    counter += 1
     end = time.time()
-    print (end - before), file, before, end
+    msg =  str(counter) + '/' + str(len(files)) + ',' + file + ',' + str(end - before)
+    log(msg)
     
 def main():
     log('Start...')
