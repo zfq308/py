@@ -7,14 +7,16 @@ import time
 rootPath = 'E:/Newfolder2'
 logFile = 'E:/log.txt'
 errorFile = 'E:/error.txt'
-resultPath = 'E:/result'
+resultPath = 'E:/result_new'
 
 files = []
+filesName = []
 counter = 0
 
 def tree(path):
     if os.path.isfile(path):
         files.append(path)
+        filesName.append(int(os.path.basename(files).split('.')[0].split('_')[1]))
     else:
         for temp in os.listdir(path):
             tree(path + os.sep + temp)
