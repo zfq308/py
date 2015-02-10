@@ -90,7 +90,7 @@ def cleanBlank(arr):
 
 def save(stockNo, content):
     path = resultPath + os.sep + stockNo + '.txt'
-    stockFile = open(path, 'a+')
+    stockFile = open(path, 'a')
     stockFile.write(content)
     stockFile.close()
 
