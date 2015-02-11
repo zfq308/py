@@ -5,18 +5,19 @@ import shutil
 import time
 import random
 
-rootPath = 'E:/Newfolder2'
-logFile = 'E:/log.txt'
-errorFile = 'E:/error.txt'
-resultPath = 'E:/result_new'
-allFile = 'D:/all_file_online.txt'
-allFileSorted = 'E:/all_file_after_sort.txt'
+DATA_SRC = 'E:/Newfolder2'
+LOG_FILE = 'E:/log.txt'
+ERROR_FILE = 'E:/error.txt'
+RESULT_PATH = 'E:/result_new'
+UNSORT_FILE_NAMES = 'D:/all_file_online.txt'
+SORTED_FILE_NAMES = 'E:/all_file_after_sort.txt'
 
-##rootPath = '/Users/spruce/Downloads/src'
-##logFile = '/Users/spruce/Downloads/log.txt'
-##errorFile = '/Users/spruce/Downloads/error.txt'
-##resultPath = '/Users/spruce/Downloads/result_new'
-##allFile = '/Users/spruce/Downloads/all_file_online.txt'
+# DATA_SRC = '/Users/spruce/Downloads/src'
+# LOG_FILE = '/Users/spruce/Downloads/log.txt'
+# ERROR_FILE = '/Users/spruce/Downloads/error.txt'
+# RESULT_PATH = '/Users/spruce/Downloads/result_new'
+# UNSORT_FILE_NAMES = '/Users/spruce/Desktop/zzh/all_file_online.txt'
+# SORTED_FILE_NAMES = '/Users/spruce/Downloads/all_file_after_sort.txt'
 
 files = []
 filesName = []
@@ -61,7 +62,7 @@ def insertion_sort():
     log('Sort done...')
 
 def saveFileName():
-    log = open(allFileSorted, 'a')
+    log = open(SORTED_FILE_NAMES, 'a')
     for file in files:
         log.write(file + '\r')
     log.close()
@@ -69,13 +70,13 @@ def saveFileName():
 def log(msg):
     msg = time.ctime() + '\t' + msg + '\r'
     print msg
-    log = open(logFile, 'a')
+    log = open(LOG_FILE, 'a')
     log.write(time.ctime() + '\t' + msg + '\r')
     log.close()
 
 def error(msg):
     print msg
-    log = open(errorFile, 'a')
+    log = open(ERROR_FILE, 'a')
     log.write(time.ctime() + '\t' + msg + '\r')
     log.close()
 
@@ -89,7 +90,7 @@ def cleanBlank(arr):
     return newArr
 
 def save(stockNo, content):
-    path = resultPath + os.sep + stockNo + '.txt'
+    path = RESULT_PATH + os.sep + stockNo + '.txt'
     stockFile = open(path, 'a')
     stockFile.write(content)
     stockFile.close()
@@ -97,7 +98,7 @@ def save(stockNo, content):
 def do(file):
     #stockNo:lines
     temp = {}
-    before = time.time()
+    startTime = time.time()
     f = open(file, 'r')
     for line in f:
         if len(line) < 10:
@@ -114,12 +115,17 @@ def do(file):
                     content = ''
                 content += line
                 temp[stockNo] = content
+    endStatis = time.time()
     for key in temp:
         save(key, temp[key])
+    endSave = time.time()
     global counter
     counter += 1
-    end = time.time()
-    msg =  str(counter) + '/' + str(len(files)) + ',' + file + ',' + str(end - before)
+    endTime = time.time()
+    msg =  str(counter) + '/' + str(len(files)) + ',' + file \
+        + ',' + str(endTime - startTime)
+        + ',' + str(endStatis - startTime)
+        + ',' + str(endSave - endStatis)
     log(msg)
 
 def load():
@@ -131,11 +137,12 @@ def load():
                 continue
             files.append(path)
             filesName.append(int(os.path.basename(path).split('.')[0].split('_')[1]))
+            # print os.path.basename(path).split('.')[0].split('_')[1]
     f.close()
     
-def load1():
-    print 'load ' + allFileSorted
-    f = open(allFileSorted, 'r')
+def loadSortedFiles():
+    print 'load ' + SORTED_FILE_NAMES
+    f = open(SORTED_FILE_NAMES, 'r')
     for l in f:
         for path in l.split('\r'):
             if path == '' or path == '\r':
@@ -147,24 +154,20 @@ def load1():
 def main():
     log('Start...')
     # get all file, save to files
-    # tree(rootPath)
-    load1()
+    # tree(DATA_SRC)
+    loadSortedFiles()
     log('Total file number : ' + str(len(files)))
-    # sort files
-##    insertion_sort()
-##    for file in files:
-##        log(file)
-    if os.path.exists(resultPath):
-        shutil.rmtree(resultPath)
-    os.mkdir(resultPath)
+    if os.path.exists(RESULT_PATH):
+        shutil.rmtree(RESULT_PATH)
+    os.mkdir(RESULT_PATH)
     for file in files:
         do(file)
 
 if __name__ == '__main__':
     main()
-##    load()
-##    insertion_sort()
-##    saveFileName()
+    # load()
+    # insertion_sort()
+    # saveFileName()
     
 
 
