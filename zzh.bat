@@ -1,0 +1,1 @@
+for /L %%i in (0,10000,180000) do start python zzh_plus.py %%i
