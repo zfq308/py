@@ -6,5 +6,5 @@ if __name__ == '__main__':
     createValue = float(createValue)
     createValue /= 1000
     print 'Date String:'
-    print time.strftime('%Y-%m-%d %H:%M:%S', time.gmtime(createValue))
+    print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(createValue))
     os.system('pause')
